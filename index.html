@@ -1,39 +1,45 @@
-<?php
-
-// Thay thế YOUR_ORIGINAL_URL bằng URL thực tế mà bạn muốn che giấu
-$originalUrl = "https://beautifier.io/";
-
-// Thay thế YOUR_CLOAKED_URL bằng URL thực tế mà bạn muốn người dùng được chuyển hướng đến
-$cloakedUrl = "https://www.theverge.com/";
-
-// Thiết lập địa chỉ IP và mã quốc gia của người dùng
-$ipAddress = $_SERVER["REMOTE_ADDR"];
-$countryCode = file_get_contents("https://ipapi.co/{$ipAddress}/country/");
-
-// Kiểm tra xem người dùng có truy cập từ thiết bị di động không
-$isMobile = preg_match("/(android|blackberry|iphone|ipad|ipod|iemobile|opera mobile|palmos|webos|googlebot-mobile)/i", $_SERVER["HTTP_USER_AGENT"]);
-
-// Chỉ cho phép truy cập đến URL được che giấu nếu người dùng đến từ Hoa Kỳ và sử dụng user agent di động
-if ($countryCode == "US" && $isMobile) {
-  // Chuyển hướng người dùng đến URL được che giấu
-  header("Location: $cloakedUrl");
-
-  // Thiết lập cookie để nhớ URL ban đầu
-  setcookie("originalUrl", $originalUrl, time() + 3600, "/");
-} else {
-  // Hiển thị thông báo lỗi
-  echo "Truy cập bị từ chối.";
-}
-
-?>
-
-<!-- Hiển thị một trang web cho thấy URL gốc trong thanh địa chỉ -->
+<!DOCTYPE html>
 <html>
-  <head>
-    <title>Đang tải...</title>
-    <meta http-equiv="refresh" content="0;url=<?php echo $cloakedUrl; ?>">
-  </head>
-  <body>
-    <p>Vui lòng đợi trong khi chúng tôi chuyển hướng bạn đến trang đích...</p>
-  </body>
+<head>
+	<title>Cloaking Demo</title>
+	<script>
+		function checkRequest() {
+			// Get the user agent string
+			var userAgent = navigator.userAgent;
+
+			// Check if the user agent is a mobile device
+			if (/Mobi/.test(userAgent)) {
+				// Use an IP geolocation API to get the user's country
+				fetch('https://ipapi.co/json/')
+				.then(response => response.json())
+				.then(data => {
+					var countryCode = data.country_code;
+
+					// Check if the country is the target country
+					if (countryCode === 'US') {
+						// Generate a cloaked URL
+						var cloakedUrl = 'https://example.com/' + Math.random().toString(36).substring(2, 8);
+
+						// Redirect the user to the cloaked URL
+						window.location.href = cloakedUrl;
+					} else {
+						// Redirect the user to a safe landing page
+						window.location.href = 'https://example.com/landing';
+					}
+				})
+				.catch(error => {
+					// Handle errors
+					console.error(error);
+				});
+			} else {
+				// Redirect the user to a safe landing page
+				window.location.href = 'https://example.com/landing';
+			}
+		}
+	</script>
+</head>
+<body onload="checkRequest()">
+	<h1>Cloaking Demo</h1>
+	<p>This page will check the IP address country and user agent of an incoming request and redirect the user to a cloaked URL or safe landing page.</p>
+</body>
 </html>
