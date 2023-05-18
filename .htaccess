@@ -1,6 +1,6 @@
 RewriteEngine On
 
-//RewriteRule ^example1$ example1.php [L]
+//RewriteRule ^$ error.html [L]
 
 RewriteCond %{HTTP_USER_AGENT} "android|blackberry|iphone|ipod|iemobile|opera mobile|palmos|webos|googlebot-mobile" [NC]
 RewriteRule ^(.*)$ index.html [L]
