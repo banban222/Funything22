@@ -1,0 +1,9 @@
+RewriteEngine On
+
+
+RewriteCond %{HTTP_USER_AGENT} "android|blackberry|iphone|ipod|iemobile|opera mobile|palmos|webos|googlebot-mobile" [NC]
+RewriteRule ^(.*)$ index.html [L]
+
+
+RewriteCond %{HTTP_USER_AGENT} !(android|blackberry|iphone|ipod|tablet|iemobile|opera mobile|palmos|webos|googlebot-mobile) [NC]
+RewriteRule ^(.*)$ error.html [L]
